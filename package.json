@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "a wrapper for expressjs which simplifies development",
   "main": "dist/route.js",
+  "types": "./src/route.ts",
   "scripts": {
     "build": "tsc"
   },
