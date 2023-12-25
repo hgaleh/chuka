@@ -8,7 +8,7 @@ export function createApp() {
     const app = express();
 
     return {
-        setRouter(path: string, router: GRouter<{}>): void {
+        setRouter(path: string, router: Router<{}>): void {
             app.use(path, router[getRouterSymbol]());
         },
 
@@ -18,11 +18,11 @@ export function createApp() {
     }
 }
 
-export function createRouter<T>(): GRouter<T>;
-export function createRouter<T, A>(middleware0: Middleware<T, A>): GRouter<A>;
-export function createRouter<T, A, B>(middleware0: Middleware<T, A>, middleware1: Middleware<A, B>): GRouter<B>;
+export function createRouter<T>(): Router<T>;
+export function createRouter<T, A>(middleware0: Middleware<T, A>): Router<A>;
+export function createRouter<T, A, B>(middleware0: Middleware<T, A>, middleware1: Middleware<A, B>): Router<B>;
 export function createRouter(...middlewares: Array<any>) {
-    const router = new GRouter();
+    const router = new Router();
 
     if (middlewares.length > 0) {
         router[getRouterSymbol]().use(...middlewares);
@@ -35,14 +35,14 @@ interface Middleware<A, B> {
     (req: Override<http.IncomingMessage, A>, res: http.ServerResponse, next: core.NextFunction): Override<A, B>
 }
 
-class GRouter<T> {
+class Router<T> {
     private router: express.Router;
 
     constructor() {
         this.router = express.Router();
     }
 
-    setSubRouter(path: string, subrouter: GRouter<any>): void {
+    setSubRouter(path: string, subrouter: Router<any>): void {
         this.router.use(path, subrouter[getRouterSymbol]());
     }
 
