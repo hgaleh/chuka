@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "galeh": "../.."
+    "galeh": "../..",
+    "status-code-enum": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

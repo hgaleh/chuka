@@ -2,18 +2,20 @@ import { Controller } from 'galeh';
 import { inject, injectable } from 'galeh/decorators';
 import { body } from 'galeh/middlewares';
 import { CatsServiceInterface } from './cats-service-interface';
-import { createLoggerInterceptor } from './create-logger-interceptor';
+import { createLogger } from './create-logger';
+import { catDtoValidator } from './cat-dto-validator';
 
 @injectable()
 export class CatsController extends Controller {
     constructor(@inject('catservice') service: CatsServiceInterface) {
         super();
 
-        const intercepted = this.middleware(createLoggerInterceptor());
+        const intercepted = this.middleware(createLogger());
 
         intercepted.middleware(
-            body<{ name: string }>()
-        ).post('/', async (req, res) => {{            
+            body<{ name: string }>(),
+            catDtoValidator()
+        ).post('/', async (req, res) => {{       
             const allcats = await service.add(req.body.name);
             res.send(allcats);
         }});
