@@ -1,13 +1,12 @@
 import express from 'express';
 import core from 'express-serve-static-core';
-import http from 'http';
 import { injectable } from 'inversify';
 
 export const getRouterSymbol = Symbol();
 export const setControllerSymbol = Symbol();
 
 export interface Middleware<T> {
-    (req: OverridePartial<http.IncomingMessage, T>, res: http.ServerResponse, next: core.NextFunction): void;
+    (req: OverridePartial<express.Request, T>, res: express.Response, next: core.NextFunction): void;
 }
 
 @injectable()
