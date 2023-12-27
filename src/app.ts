@@ -8,7 +8,7 @@ export function createApp(routes: Array<Route>) {
     const controllerEmulator = new ControllerEmulator(app);
     const container = new Container();
     initDependencies(routes, container);
-    initControllers(routes, container, controllerEmulator as any as Controller<unknown>);
+    initControllers(routes, container, controllerEmulator as any as Controller);
 
     return {
         listen(port: number, callback: any): void {
@@ -32,10 +32,10 @@ function initDependencies(routes: Array<Route>, container: Container, parentPath
     }
 }
 
-function initControllers(routes: Array<Route>, container: Container, app: Controller<unknown>, parentPath = ''): void {
+function initControllers(routes: Array<Route>, container: Container, app: Controller, parentPath = ''): void {
     for (const route of routes) {
         const key = parentPath + route.path;
-        const controller = container.get<Controller<unknown>>(key);
+        const controller = container.get<Controller>(key);
         app[setControllerSymbol](route.path, controller);
 
         if (route.children) {
@@ -47,7 +47,7 @@ function initControllers(routes: Array<Route>, container: Container, app: Contro
 class ControllerEmulator {
     constructor(private app: express.Application) {}
 
-    private [setControllerSymbol](path: string, subrouter: Controller<unknown>): void {
+    private [setControllerSymbol](path: string, subrouter: Controller): void {
         this.app.use(path, subrouter[getRouterSymbol]());
     }
 }
@@ -63,7 +63,7 @@ interface Dependency {
 
 export interface Route {
     path: string;
-    controller: Type<Controller<unknown>>;
+    controller: Type<Controller>;
     children?: Array<Route>;
     dependencies?: Array<Dependency>
 }

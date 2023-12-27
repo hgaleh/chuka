@@ -11,19 +11,14 @@ export interface Middleware<T> {
 }
 
 @injectable()
-export abstract class Controller<T> {
+export class Controller {
     private router: express.Router;
-    
-    constructor(...middlewares: Array<Middleware<T>>) {
-        this.router = express.Router();
-        const routerImp = this.router as any;
 
-        if (middlewares.length > 0) {
-            routerImp.use.apply(routerImp, middlewares);
-        }
+    constructor() {
+        this.router = express.Router();
     }
 
-    private [setControllerSymbol](path: string, subrouter: Controller<unknown>): void {
+    private [setControllerSymbol](path: string, subrouter: Controller): void {
         this.router.use(path, subrouter[getRouterSymbol]());
     }
 
@@ -31,36 +26,25 @@ export abstract class Controller<T> {
         return this.router;
     }
 
-    protected get<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>) {
-        this.router.get(path, (req, res) => {
-            handler(req as any, res);
-        })
-    }
-
-    protected post<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>) {
-        this.router.post(path, (req, res) => {
-            handler(req as any, res);
-        })
-    }
-    
-    protected middleware<A, Path extends string = string>(path: Path, middleware0: Middleware<A>): MiniController<A, RouteParameters<Path>>;    
-    protected middleware<A, B, Path extends string = string>(path: Path, middleware0: Middleware<A>, middleware1: Middleware<B>): MiniController<A & B, RouteParameters<Path>>;    
-    protected middleware<A, B, C, Path extends string = string>(path: Path, middleware0: Middleware<A>, middleware1: Middleware<B>, middleware2: Middleware<C>): MiniController<A & B & C, RouteParameters<Path>>;    
-    protected middleware<S, Path extends string = string>(path: Path, ...middlewares: Array<Middleware<S>>): MiniController<S, RouteParameters<Path>> {    
-        return new MiniController(this.router, path, middlewares);
+    protected middleware<M0>(): MiniController<any>;
+    protected middleware<M0>(middleware0: Middleware<M0>): MiniController<M0>;
+    protected middleware<M0, M1>(middleware0: Middleware<M0>, middleware1: Middleware<M1>): MiniController<M0 & M1>;
+    protected middleware<M0, M1, M2>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>): MiniController<M0 & M1 & M2>;
+    protected middleware<M0, M1, M2, M3>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>, middleware3: Middleware<M3>): MiniController<M0 & M1 & M2 & M3>;
+    protected middleware<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
+        return new MiniController(this.router, middlewares);
     }
 }
 
-class MiniController<T, P = ParamsDictionary> {
+class MiniController<T> {
     constructor(
         private router: any,
-        private path: string,
         private middlewares: any[]
     ) {}
 
-    get(handler: RequestHandler<T, P>): void {
+    get<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>): void {
         this.router.get.apply(this.router, [
-            this.path,
+            path,
             ...this.middlewares,
             (req: any, res: any) => {
                 handler(req, res);
@@ -68,14 +52,22 @@ class MiniController<T, P = ParamsDictionary> {
         ]);
     }
 
-    post(handler: RequestHandler<T, P>): void {
+    post<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>): void {
         this.router.post.apply(this.router, [
-            this.path,
+            path,
             ...this.middlewares,
             (req: any, res: any) => {
                 handler(req, res);
             }
         ]);
+    }
+
+    middleware<M0>(middleware0: Middleware<M0>): MiniController<M0>;
+    middleware<M0, M1>(middleware0: Middleware<M0>, middleware1: Middleware<M1>): MiniController<M0 & M1>;
+    middleware<M0, M1, M2>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>): MiniController<M0 & M1 & M2>;
+    middleware<M0, M1, M2, M3>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>, middleware3: Middleware<M3>): MiniController<M0 & M1 & M2 & M3>;
+    middleware<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
+        return new MiniController(this.router, this.middlewares.concat(middlewares));
     }
 }
 

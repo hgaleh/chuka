@@ -1,2 +1,2 @@
 export { createApp } from './app';
-export { Controller } from './controller';
+export { Controller, Middleware } from './controller';
