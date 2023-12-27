@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from 'galeh/decorators';
 import { CatsServiceInterface } from './cats-service-interface';
 import { CatModel } from './cat-model';
 

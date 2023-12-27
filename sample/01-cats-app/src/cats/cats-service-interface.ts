@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import { CatModel } from './cat-model';
 
 export interface CatsServiceInterface {
