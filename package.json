@@ -11,9 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "inversify": "^6.0.2"
-  },
-  "peerDependencies": {
+    "inversify": "^6.0.2",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
@@ -30,6 +28,11 @@
       "types": "./src/middlewares/index.ts",
       "import": "./dist/middlewares/index.js",
       "require": "./dist/middlewares/index.js"
+    },
+    "./decorators": {
+      "types": "./src/decorators/index.ts",
+      "import": "./dist/decorators/index.js",
+      "require": "./dist/decorators/index.js"
     }
   }
 }

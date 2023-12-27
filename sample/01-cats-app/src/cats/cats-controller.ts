@@ -1,22 +1,16 @@
 import { Controller } from 'galeh';
-import { inject, injectable } from 'inversify';
-import { CatsServiceInterface } from './cats-service-interface';
+import { inject, injectable } from 'galeh/decorators';
 import { body } from 'galeh/middlewares';
+import { CatsServiceInterface } from './cats-service-interface';
 
 @injectable()
 export class CatsController extends Controller<{}> {
     constructor(@inject('catservice') service: CatsServiceInterface) {
         super();
 
-        // @Roles(['admin'])
-        // async create(@Body() createCatDto: CreateCatDto) {
-        //     this.catsService.create(createCatDto);
-        // }
-        const bod = body<{ name: string }>();
-
         this.middleware(
             '/',
-            bod
+            body<{ name: string }>()
         ).post( async (req, res) => {{            
             const allcats = await service.add(req.body.name);
             res.send(allcats);
