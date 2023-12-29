@@ -18,7 +18,7 @@ export class Controller {
         this.router = express.Router();
     }
 
-    private [setControllerSymbol](path: string, subrouter: Controller): void {
+    private [setControllerSymbol](path: core.PathParams, subrouter: Controller): void {
         this.router.use(path, subrouter[getRouterSymbol]());
     }
 

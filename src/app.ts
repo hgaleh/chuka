@@ -3,13 +3,14 @@ import express from 'express';
 import { Container, interfaces } from "inversify";
 import { Controller, Middleware, getRouterSymbol, setControllerSymbol } from './controller';
 import ws from 'express-ws';
+import core from 'express-serve-static-core';
 
 export function createApp(config: ApplicationConfig): express.Application {
     const app = express();
     ws(app);
 
     if (config.middlewares) {
-        app.use(config.middlewares);
+        app.use.apply(app, config.middlewares as any);
     }
 
     const controllerEmulator = new ControllerEmulator(app);
@@ -44,17 +45,16 @@ function initDependencies(dependencies: Array<Dependency>, container: Container)
     }
 }
 
-function initControllersAsDependency(routes: Array<Route>, container: Container, parentPath = ''): void {
+function initControllersAsDependency(routes: Array<Route>, container: Container): void {
     for (const route of routes) {
-        const key = parentPath + route.path;
-        bindClass(container, key, route.controller);
+        bindClass(container, route.controller, route.controller);
         if (route.children) {
-            initControllersAsDependency(route.children, container, key);
+            initControllersAsDependency(route.children, container);
         }
     }
 }
 
-function bindClass(container: Container, token: string, classtype: Type<any>): void {
+function bindClass<T>(container: Container, token: Type<T> | string, classtype: Type<any>): void {
     container.bind<any>(token).to(classtype as any as interfaces.Newable<any>);
 }
 
@@ -62,14 +62,13 @@ function bindValue(container: Container, token: string, value: any): void {
     container.bind<any>(token).toConstantValue(value);
 }
 
-function initControllers(routes: Array<Route>, container: Container, app: Controller, parentPath = ''): void {
+function initControllers(routes: Array<Route>, container: Container, app: Controller): void {
     for (const route of routes) {
-        const key = parentPath + route.path;
-        const controller = container.get<Controller>(key);
+        const controller = container.get<Controller>(route.controller);
         app[setControllerSymbol](route.path, controller);
 
         if (route.children) {
-            initControllers(route.children, container, controller, key);
+            initControllers(route.children, container, controller);
         }
     }
 }
@@ -93,7 +92,7 @@ interface Dependency {
 }
 
 interface Route {
-    path: string;
+    path: core.PathParams;
     controller: Type<Controller>;
     children?: Array<Route>;
 }
@@ -101,5 +100,5 @@ interface Route {
 interface ApplicationConfig {
     routes: Array<Route>;
     dependencies?: Array<Dependency>;
-    middlewares?: Array<Middleware<unknown>>
+    middlewares?: Array<Middleware<any>>
 }
