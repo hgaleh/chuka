@@ -1,2 +1,2 @@
 export { createApp } from './app';
-export { Controller, Middleware } from './controller';
+export { Controller, Middleware, WSMiddleware, OverridePartial, Override } from './controller';

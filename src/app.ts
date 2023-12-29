@@ -1,23 +1,23 @@
 import 'reflect-metadata';
 import express from 'express';
 import { Container, interfaces } from "inversify";
-import { Controller, getRouterSymbol, setControllerSymbol } from './controller';
+import { Controller, Middleware, getRouterSymbol, setControllerSymbol } from './controller';
 import ws from 'express-ws';
 
-export function createApp(config: ApplicationConfig) {
+export function createApp(config: ApplicationConfig): express.Application {
     const app = express();
     ws(app);
+
+    if (config.middlewares) {
+        app.use(config.middlewares);
+    }
 
     const controllerEmulator = new ControllerEmulator(app);
     const container = new Container();
     initAllDependencies(config, container);
     initControllers(config.routes, container, controllerEmulator as any as Controller);
 
-    return {
-        listen(port: number, callback: any): void {
-            app.listen(port, callback);
-        }
-    }
+    return app;
 }
 
 function initAllDependencies(config: ApplicationConfig, container: Container): void {
@@ -99,6 +99,7 @@ interface Route {
 }
 
 interface ApplicationConfig {
-    dependencies?: Array<Dependency>;
     routes: Array<Route>;
+    dependencies?: Array<Dependency>;
+    middlewares?: Array<Middleware<unknown>>
 }

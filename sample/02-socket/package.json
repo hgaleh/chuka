@@ -1,5 +1,5 @@
 {
-  "name": "01-cats-app",
+  "name": "02-socket",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "galeh": "../..",
-    "status-code-enum": "^1.0.0"
+    "@types/express-session": "^1.17.10",
+    "express-session": "^1.17.3",
+    "galeh": "file:../.."
   },
   "devDependencies": {
     "ts-node": "^10.9.2"
