@@ -55,11 +55,15 @@ function initControllersAsDependency(routes: Array<Route>, container: Container)
 }
 
 function bindClass<T>(container: Container, token: Type<T> | string, classtype: Type<any>): void {
-    container.bind<any>(token).to(classtype as any as interfaces.Newable<any>);
+    if (!container.isBound(token)){
+        container.bind<any>(token).to(classtype as any as interfaces.Newable<any>);
+    }
 }
 
 function bindValue(container: Container, token: string, value: any): void {
-    container.bind<any>(token).toConstantValue(value);
+    if (!container.isBound(token)) {
+        container.bind<any>(token).toConstantValue(value);
+    }
 }
 
 function initControllers(routes: Array<Route>, container: Container, app: Controller): void {

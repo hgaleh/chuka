@@ -18,15 +18,6 @@ declare module 'express-session' {
 }
 const sessionStore = new MemoryStore();
 
-const middlw = createSession<{ count: number }>({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-    store: sessionStore
-});
-
-
 
 const app = createApp({
     routes: [
@@ -40,7 +31,13 @@ const app = createApp({
         }
     ],
     middlewares: [
-        middlw
+        createSession<{ count: number }>({
+            secret: 'keyboard cat',
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: false },
+            store: sessionStore
+        })
     ]
 });
 

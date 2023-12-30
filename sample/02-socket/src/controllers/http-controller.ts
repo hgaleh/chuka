@@ -6,7 +6,6 @@ export class HttpController extends Controller {
         const intercepted = this.middleware();
     
         intercepted.get('/', (req, res) => {
-            const sess = req.session;
             if (!req.session?.count) {
                 req.session.count = 1;
             } else {

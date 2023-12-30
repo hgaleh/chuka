@@ -1,4 +1,5 @@
 import { createApp } from 'galeh';
+import { json } from 'galeh/middlewares';
 import { CatsController } from './cats/cats-controller';
 import { CatsService } from './cats/cats-service';
 
@@ -14,6 +15,9 @@ const app = createApp({
             path: '/cats',
             controller: CatsController
         }
+    ],
+    middlewares: [
+        json()
     ]
 });
 

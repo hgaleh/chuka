@@ -1,25 +1,28 @@
-import { Controller } from 'galeh';
+import { Controller, Middleware } from 'galeh';
 import { inject, injectable } from 'galeh/decorators';
-import { body } from 'galeh/middlewares';
 import { CatsServiceInterface } from './cats-service-interface';
 import { createLogger } from './create-logger';
-import { catDtoValidator } from './cat-dto-validator';
+import { and, bodyValidator, isDefined, isNumber, isString } from 'galeh/validators';
+import { CatModel } from './cat-model';
 
 @injectable()
 export class CatsController extends Controller {
     constructor(@inject('catservice') service: CatsServiceInterface) {
         super();
 
-        const intercepted = this.middleware(createLogger());
+        const intercepted = this.middleware(
+            createLogger()
+        );
 
         intercepted.middleware(
-            body<{ name: string }>(),
-            catDtoValidator()
+            bodyValidator<CatModel>({
+                name: and(isDefined('name'), isString('name'))
+            })
         ).post('/', async (req, res) => {{       
             const allcats = await service.add(req.body.name);
             res.send(allcats);
         }});
-
+        
         intercepted.get('/', async (req, res) => {{
             const allcats = await service.findAll();
             res.send(allcats);

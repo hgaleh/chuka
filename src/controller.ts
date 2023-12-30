@@ -80,10 +80,10 @@ class MiniController<T> {
         ]);
     }
 
-    middleware<M0>(middleware0: Middleware<Merge<T, M0>>): MiniController<Merge<T, M0>>;
-    middleware<M0, M1>(middleware0: Middleware<Merge<T, M0>>, middleware1: Middleware<Merge<T, M1>>): MiniController<Merge<T, M0 & M1>>;
-    middleware<M0, M1, M2>(middleware0: Middleware<Merge<T, M0>>, middleware1: Middleware<Merge<T, M1>>, middleware2: Middleware<Merge<T, M2>>): MiniController<Merge<T, M0 & M1 & M2>>;
-    middleware<M0, M1, M2, M3>(middleware0: Middleware<Merge<T, M0>>, middleware1: Middleware<Merge<T, M1>>, middleware2: Middleware<Merge<T, M2>>, middleware3: Middleware<Merge<T, M3>>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
+    middleware<M0>(middleware0: Middleware<M0>): MiniController<Merge<T, M0>>;
+    middleware<M0, M1>(middleware0: Middleware<M0>, middleware1: Middleware<M1>): MiniController<Merge<T, M0 & M1>>;
+    middleware<M0, M1, M2>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>): MiniController<Merge<T, M0 & M1 & M2>>;
+    middleware<M0, M1, M2, M3>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>, middleware3: Middleware<M3>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
     middleware<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
         return new MiniController(this.router, this.middlewares.concat(middlewares));
     }
@@ -94,17 +94,18 @@ interface RequestHandler<
     P = ParamsDictionary
 > {
     (
-        req: Merge<core.Request, T & { params: P }>,
-        res: core.Response
+        req: Merge<express.Request, T & { params: P }>,
+        res: express.Response
     ): void;
 }
 
-export type Merge<A, B> = {
-   [k in keyof A & keyof B]: (A & B)[k] extends never ? B[k] : A[k] & B[k]
-} & Omit<A, keyof B> & Omit<B, keyof A>;
 
+export type Merge<A, B> = {
+    [k in keyof A & keyof B]: (A & B)[k] extends never ? B[k] : 0 extends 1 & (A & B)[k] ? B[k] : (A & B)[k];
+} & Omit<A, keyof B> & Omit<B, keyof A>;
+ 
 export type MergePartial<A, B> = {
-    [k in keyof A & keyof B]: (A & B)[k] extends never ? B[k] : A[k] & B[k]
+    [k in keyof A & keyof B]: (A & B)[k] extends never ? B[k] : 0 extends 1 & (A & B)[k] ? B[k] : (A & B)[k];
 } & Omit<A, keyof B> & Partial<Omit<B, keyof A>>;
 
 interface ParamsDictionary {

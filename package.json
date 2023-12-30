@@ -27,15 +27,20 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
-    "./middlewares": {
-      "types": "./src/middlewares/index.ts",
-      "import": "./dist/middlewares/index.js",
-      "require": "./dist/middlewares/index.js"
+    "./validators": {
+      "types": "./src/validators/index.ts",
+      "import": "./dist/validators/index.js",
+      "require": "./dist/validators/index.js"
     },
     "./decorators": {
       "types": "./src/decorators/index.ts",
       "import": "./dist/decorators/index.js",
       "require": "./dist/decorators/index.js"
+    },
+    "./middlewares": {
+      "types": "./src/middlewares/index.ts",
+      "import": "./dist/middlewares/index.js",
+      "require": "./dist/middlewares/index.js"
     }
   }
 }
