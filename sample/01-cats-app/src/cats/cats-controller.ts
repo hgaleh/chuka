@@ -2,7 +2,7 @@ import { Controller, Middleware } from 'galeh';
 import { inject, injectable } from 'galeh/decorators';
 import { CatsServiceInterface } from './cats-service-interface';
 import { createLogger } from './create-logger';
-import { and, bodyValidator, isDefined, isNumber, isString } from 'galeh/validators';
+import { and, bodyValidator, isDefined, isString } from 'galeh/validators';
 import { CatModel } from './cat-model';
 
 @injectable()

@@ -29,7 +29,7 @@ export function validator<T, F extends string>(validationLogic: ValidationLogic<
         if (result) {
             next();
         } else {
-            res.status(400).json(errorObject);
+            next(errorObject);
         }
     }
 }

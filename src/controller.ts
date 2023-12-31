@@ -6,8 +6,24 @@ import ws from 'ws';
 export const getRouterSymbol = Symbol();
 export const setControllerSymbol = Symbol();
 
+
+export type RequestHandlerParams<T> = Middleware<T> | ErrorHandler<T>;
+
 export interface Middleware<T> {
-    (req: MergePartial<express.Request, T>, res: express.Response, next: core.NextFunction): void;
+    (
+        req: MergePartial<express.Request, T>,
+        res: express.Response,
+        next: core.NextFunction
+    ): void;
+}
+
+export interface ErrorHandler<T> {
+    (
+        err: any,
+        req: MergePartial<express.Request, T>,
+        res: express.Response,
+        next: express.NextFunction,
+    ): void;
 }
 
 @injectable()
@@ -38,10 +54,10 @@ export class Controller {
     }
 
     protected middleware(): MiniController<unknown>;
-    protected middleware<M0>(middleware0: Middleware<M0>): MiniController<M0>;
-    protected middleware<M0, M1>(middleware0: Middleware<M0>, middleware1: Middleware<M1>): MiniController<M0 & M1>;
-    protected middleware<M0, M1, M2>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>): MiniController<M0 & M1 & M2>;
-    protected middleware<M0, M1, M2, M3>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>, middleware3: Middleware<M3>): MiniController<M0 & M1 & M2 & M3>;
+    protected middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<M0>;
+    protected middleware<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<M0 & M1>;
+    protected middleware<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<M0 & M1 & M2>;
+    protected middleware<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<M0 & M1 & M2 & M3>;
     protected middleware(...middlewares: Array<unknown>): MiniController<unknown> {    
         return new MiniController(this.router, middlewares);
     }
@@ -64,8 +80,8 @@ class MiniController<T> {
         this.router.get.apply(this.router, [
             path,
             ...this.middlewares,
-            (req: any, res: any) => {
-                handler(req, res);
+            (req: any, res: any, next: any) => {
+                handler(req, res, next);
             }
         ]);
     }
@@ -74,16 +90,16 @@ class MiniController<T> {
         this.router.post.apply(this.router, [
             path,
             ...this.middlewares,
-            (req: any, res: any) => {
-                handler(req, res);
+            (req: any, res: any, next: any) => {
+                handler(req, res, next);
             }
         ]);
     }
 
-    middleware<M0>(middleware0: Middleware<M0>): MiniController<Merge<T, M0>>;
-    middleware<M0, M1>(middleware0: Middleware<M0>, middleware1: Middleware<M1>): MiniController<Merge<T, M0 & M1>>;
-    middleware<M0, M1, M2>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>): MiniController<Merge<T, M0 & M1 & M2>>;
-    middleware<M0, M1, M2, M3>(middleware0: Middleware<M0>, middleware1: Middleware<M1>, middleware2: Middleware<M2>, middleware3: Middleware<M3>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
+    middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<Merge<T, M0>>;
+    middleware<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<Merge<T, M0 & M1>>;
+    middleware<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<Merge<T, M0 & M1 & M2>>;
+    middleware<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
     middleware<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
         return new MiniController(this.router, this.middlewares.concat(middlewares));
     }
@@ -95,7 +111,8 @@ interface RequestHandler<
 > {
     (
         req: Merge<express.Request, T & { params: P }>,
-        res: express.Response
+        res: express.Response,
+        next: core.NextFunction
     ): void;
 }
 

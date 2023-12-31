@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
 import { Container, interfaces } from "inversify";
-import { Controller, Middleware, getRouterSymbol, setControllerSymbol } from './controller';
+import inversify from "inversify";
+import { Controller, RequestHandlerParams, getRouterSymbol, setControllerSymbol } from './controller';
 import ws from 'express-ws';
 import core from 'express-serve-static-core';
 
@@ -31,16 +32,14 @@ function initAllDependencies(config: ApplicationConfig, container: Container): v
 
 function initDependencies(dependencies: Array<Dependency>, container: Container): void {
     for (const dep of dependencies) {
-        if (dep.useClass && dep.useValue ) {
-            throw Error('can not set both value and class');
-        }
-
         if (dep.useValue) {
             bindValue(container, dep.provide, dep.useValue);
+            continue;
         }
 
         if (dep.useClass) {
             bindClass(container, dep.provide, dep.useClass);
+            continue;
         }
     }
 }
@@ -65,6 +64,13 @@ function bindValue(container: Container, token: string, value: any): void {
         container.bind<any>(token).toConstantValue(value);
     }
 }
+
+function bindFactory(container: Container, token: string, factory: inversify.interfaces.FactoryCreator<unknown>): void {
+    if (!container.isBound(token)) {
+        container.bind<any>(token).toFactory(factory);
+    }
+}
+
 
 function initControllers(routes: Array<Route>, container: Container, app: Controller): void {
     for (const route of routes) {
@@ -104,5 +110,5 @@ interface Route {
 interface ApplicationConfig {
     routes: Array<Route>;
     dependencies?: Array<Dependency>;
-    middlewares?: Array<Middleware<any>>
+    middlewares?: Array<RequestHandlerParams<any>>
 }
