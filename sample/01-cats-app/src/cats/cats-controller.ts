@@ -18,7 +18,7 @@ export class CatsController extends Controller {
             bodyValidator<CatModel>({
                 name: and(isDefined(), isString()),
                 country: isNumber(),
-                age: and(custom(model => !!(model.age && model.age > 2)), isNumber()),
+                age: custom(model => Promise.resolve(!!(model.age && model.age > 2))),
                 parents: {
                     name: isString(),
                     parents: {
