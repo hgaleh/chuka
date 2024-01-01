@@ -7,7 +7,7 @@ export function validator<T, F extends PropertyKey>(validationLogic: ValidationL
         // @ts-ignore
         const errors = applyValidation(req[requestField], validationLogic);
         const result = isThereAnyErrors(errors);
-
+    
         if (result) {
             next(errors);
         } else {
@@ -20,20 +20,20 @@ function applyValidation<T>(obj: T, validationLogic: ValidationLogic<T>): Partia
     const validationResult: Partial<Record<keyof T, any>> = {};
 
     for (const key in validationLogic) {
-        const microValidator = validationLogic[key];
+        const atomicValidator = validationLogic[key];
 
-        if (microValidator) {
-            if (microValidator instanceof Function) {
+        if (atomicValidator) {
+            if (atomicValidator instanceof Validator) {
                 try {
-                    validationResult[key] = microValidator(obj);
+                    validationResult[key] = atomicValidator.validate(obj, key);
                 } catch (err) {
                     validationResult[key] = false;
                 }
             } else {
                 if (obj[key] instanceof Array) {
-                    validationResult[key] = (obj[key] as Array<any>).map(objj => applyValidation(objj, microValidator));
+                    validationResult[key] = (obj[key] as Array<any>).map(objj => applyValidation(objj, atomicValidator));
                 } else {
-                    validationResult[key] = applyValidation(obj[key], microValidator as any);
+                    validationResult[key] = applyValidation(obj[key], atomicValidator as any);
                 }
             }
         } else {
@@ -61,62 +61,124 @@ function isThereAnyErrors(obj: Object): boolean {
 type UnArray<T> = T extends Array<infer A> ? A : T;
 
 export type ValidationLogic<T> = {
-    [k in keyof T as T[k] extends Function ? never : k]?: ValidationLogic<UnArray<T[k]>> | ValidationFunction<T>; 
+    [k in keyof T as T[k] extends Function ? never : k]?: ValidationLogic<UnArray<T[k]>> | Validator<T>; 
 }
 
-type ValidationFunction<T> = (subject: T) => boolean;
+// type ValidationFunction<T> = (subject: T) => boolean;
 
-export function isString<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return (typeof subj[field] === 'string');
-    }
-}
-
-export function isNumber<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return (typeof subj[field] === 'number');
-    }
-}
-
-export function isDefined<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return subj[field] != undefined;
-    }
-}
-
-export function isUndefined<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return subj[field] === undefined;
-    }
-}
-
-export function isNull<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return subj[field] === null;
-    }
-}
-
-export function notNull<T>(field: keyof T): ValidationFunction<T> {
-    return (subj: T) => {
-        return subj[field] !== null;
-    }
+export abstract class Validator<T> {
+    abstract validate(subject: T, selectedField: keyof T): boolean;
 }
 
 
-export function and<T>(...validationFunctions: Array<ValidationFunction<T>>): ValidationFunction<T> {
-    return (subject: T) => {
-        return validationFunctions.every(validationFunction => validationFunction(subject));
+class CustomValidator<T> extends Validator<T> {
+    constructor(private validator: (obj: T) => boolean) {
+        super();
+    }
+
+    validate(subject: T, selectedField: keyof T): boolean {
+        return this.validator(subject);
     }
 }
 
-export function or<T>(...validationFunctions: Array<ValidationFunction<T>>): ValidationFunction<T> {
-    return (subject: T) => {
-        return validationFunctions.some(validationFunction => validationFunction(subject));
+export function custom<T>(validator: (obj: T) => boolean): Validator<T> {
+    return new CustomValidator(validator);
+}
+
+export class AtomicValidator<T> extends Validator<T> {
+    constructor(private implementation: (subject: T | T[keyof T]) => boolean, public queryField?: keyof T) {
+        super();
+    }
+
+    validate(subject: T, selectedField: keyof T): boolean {
+        return this.implementation(this.queryField ? subject[this.queryField] : subject[selectedField]);
     }
 }
 
-export function not<T>(validationFunction: ValidationFunction<T>): ValidationFunction<T> {
-    return (subject: T) => {
-        return !validationFunction(subject);
+export function isString<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return typeof subject === 'string';
+    }, field);
+}
+
+export function isNumber<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return typeof subject === 'number';
+    }, field);
+}
+
+export function isDefined<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return subject != undefined;
+    }, field);
+}
+
+export function isUndefined<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return subject === undefined;
+    }, field);
+}
+
+export function isNull<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return subject === null;
+    }, field);
+}
+
+export function notNull<T>(field?: keyof T): AtomicValidator<T> {
+    return new AtomicValidator((subject) => {
+        return subject !== null;
+    }, field);
+}
+
+
+class AndValidator<T> extends Validator<T> {
+    private validationFunctions: Array<Validator<T>>
+
+    constructor(...validationFunctions: Array<Validator<T>>) {
+        super();
+        this.validationFunctions = validationFunctions;
     }
+
+    validate(subject: T, selectedField: keyof T): boolean {
+        return this.validationFunctions.every(eachValidator => eachValidator.validate(subject, selectedField));
+    }
+}
+
+class OrValidator<T> extends Validator<T> {
+    private validationFunctions: Array<Validator<T>>
+
+    constructor(...validationFunctions: Array<Validator<T>>) {
+        super();
+        this.validationFunctions = validationFunctions;
+    }
+
+    validate(subject: T, selectedField: keyof T): boolean {
+        return this.validationFunctions.some(eachValidator => eachValidator.validate(subject, selectedField));
+    }
+}
+
+class NotValidator<T> extends Validator<T> {
+    private validationFunction: Validator<T>;
+
+    constructor(validationFunctions: Validator<T>) {
+        super();
+        this.validationFunction = validationFunctions;
+    }
+
+    validate(subject: T, selectedField: keyof T): boolean {
+        return !this.validationFunction.validate(subject, selectedField);
+    }
+}
+
+export function and<T>(...validationFunctions: Array<Validator<T>>): Validator<T> {
+    return new AndValidator(...validationFunctions);
+}
+
+export function or<T>(...validationFunctions: Array<Validator<T>>): Validator<T> {
+    return new OrValidator(...validationFunctions);
+}
+
+export function not<T>(validationFunction: Validator<T>): Validator<T> {
+    return new NotValidator(validationFunction);
 }

@@ -1,8 +1,8 @@
-import { Controller, Middleware } from 'galeh';
+import { Controller } from 'galeh';
 import { inject, injectable } from 'galeh/decorators';
 import { CatsServiceInterface } from './cats-service-interface';
 import { createLogger } from './create-logger';
-import { and, bodyValidator, isDefined, isNumber, isString } from 'galeh/validators';
+import { and, bodyValidator, isDefined, isNumber, isString, custom } from 'galeh/validators';
 import { CatModel } from './cat-model';
 
 @injectable()
@@ -16,12 +16,13 @@ export class CatsController extends Controller {
 
         intercepted.middleware(
             bodyValidator<CatModel>({
-                name: and(isDefined('name'), isString('name')),
-                country: isNumber('country'),
+                name: and(isDefined(), isString()),
+                country: isNumber(),
+                age: and(custom(model => !!(model.age && model.age > 2)), isNumber()),
                 parents: {
-                    name: isString('name'),
+                    name: isString(),
                     parents: {
-                        country: isString('country')
+                        country: isString(),
                     }
                 }
             })
