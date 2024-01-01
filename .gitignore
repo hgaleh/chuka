@@ -2,3 +2,4 @@ node_modules/
 dist/
 samplecpy
 sheep.png
+data.json
