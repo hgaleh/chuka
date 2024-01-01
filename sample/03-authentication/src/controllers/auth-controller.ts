@@ -14,7 +14,7 @@ export class AuthController extends Controller {
         super();
         const middleware = this.middleware();
         const authorised = middleware.middleware(authHandler);
-        
+
         authorised.get('/check-token', (req, res) => {
           res.setHeader('User-Id', req.user.id);
           res.sendStatus(200);

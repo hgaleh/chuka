@@ -21,6 +21,10 @@ const app = createApp({
     ]
 });
 
+app.use((error: any, req: any, res: any, next: any) => {
+    res.status(400).json(error);
+})
+
 app.listen(8080, () => {
     console.log('running application!');
 });

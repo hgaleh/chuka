@@ -42,7 +42,7 @@ export class Controller {
         return this.router;
     }
 
-    protected middlewareWS(): MiniControllerWS<unknown>;
+    protected middlewareWS<M0>(): MiniControllerWS<M0>;
     protected middlewareWS<M0>(middleware0: WSMiddleware<M0>): MiniControllerWS<M0>;
     protected middlewareWS<M0, M1>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>): MiniControllerWS<M0 & M1>;
     protected middlewareWS<M0, M1, M2>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>, middleware2: WSMiddleware<M2>): MiniControllerWS<M0 & M1 & M2>;
@@ -53,7 +53,7 @@ export class Controller {
         }
     }
 
-    protected middleware(): MiniController<unknown>;
+    protected middleware<M0>(): MiniController<M0>;
     protected middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<M0>;
     protected middleware<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<M0 & M1>;
     protected middleware<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<M0 & M1 & M2>;
