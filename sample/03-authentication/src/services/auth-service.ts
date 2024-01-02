@@ -1,7 +1,7 @@
 import { getJWTToken, verifyPassword } from '../utils/crypto'
 import { UserAlreadyExist } from '../exceptions/user-already-exist';
 import { WrongLoginInfoException } from '../exceptions/wrong-login-info-exception';
-import { inject, injectable } from 'galeh/decorators'
+import { inject, injectable } from '@galeh/chuka/decorators'
 import { UserServiceInterface } from './interfaces/user-service-interface'
 import { UserModel } from '../models/user-model'
 import { AuthServiceInterface } from './interfaces/auth-service-interface'

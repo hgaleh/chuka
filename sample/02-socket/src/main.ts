@@ -1,4 +1,4 @@
-import { createApp } from 'galeh';
+import { createApp } from '@galeh/chuka';
 import { HttpController } from './controllers/http-controller';
 import { SocketController } from './controllers/socket-controller';
 import { createSession } from './middleware/create-session';

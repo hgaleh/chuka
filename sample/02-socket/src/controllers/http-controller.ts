@@ -1,4 +1,4 @@
-import { Controller } from 'galeh';
+import { Controller } from '@galeh/chuka';
 
 export class HttpController extends Controller {
     constructor() {

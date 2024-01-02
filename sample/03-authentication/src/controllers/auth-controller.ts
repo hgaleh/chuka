@@ -1,7 +1,7 @@
 import { injectionTokens } from '../enums/injection-tokens';
 import { resultCodes } from '../enums/result-codes';
-import { Controller } from 'galeh';
-import { inject } from 'galeh/decorators';
+import { Controller } from '@galeh/chuka';
+import { inject } from '@galeh/chuka/decorators';
 import { authHandler } from '../middlewares/auth-handler';
 import { AuthServiceInterface } from '../services/interfaces/auth-service-interface';
 import { UserServiceInterface } from '../services/interfaces/user-service-interface';

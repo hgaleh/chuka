@@ -1,7 +1,7 @@
 import { AuthController } from './controllers/auth-controller';
-import { createApp } from 'galeh';
+import { createApp } from '@galeh/chuka';
 import { injectionTokens } from './enums/injection-tokens';
-import { json, urlencoded, raw } from 'galeh/middlewares';
+import { json, urlencoded, raw } from '@galeh/chuka/middlewares';
 import { globalErrorHandler } from './middlewares/global-error-handler';
 import { AuthService } from './services/auth-service';
 import { UserService } from './services/user-service';

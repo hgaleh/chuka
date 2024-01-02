@@ -1,5 +1,5 @@
 import session from 'express-session';
-import { Middleware } from 'galeh';
+import { Middleware } from '@galeh/chuka';
 
 export function createSession<T>(options?: session.SessionOptions): Middleware<{ session: T }> {
     const sessiongenerator = session(options);

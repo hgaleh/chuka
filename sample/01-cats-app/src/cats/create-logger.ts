@@ -1,4 +1,4 @@
-import { Middleware } from 'galeh';
+import { Middleware } from '@galeh/chuka';
 
 export function createLogger(): Middleware<unknown> {
     return (req, res, next) => {

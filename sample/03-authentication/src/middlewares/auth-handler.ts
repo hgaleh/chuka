@@ -1,5 +1,5 @@
 import { passwordSalt } from '../utils/crypto'
-import { Middleware } from '../../../../src'
+import { Middleware } from '@galeh/chuka'
 
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user-model';

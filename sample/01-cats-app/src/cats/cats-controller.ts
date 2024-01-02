@@ -1,8 +1,8 @@
-import { Controller } from 'galeh';
-import { inject, injectable } from 'galeh/decorators';
+import { Controller } from '@galeh/chuka';
+import { inject, injectable } from '@galeh/chuka/decorators';
 import { CatsServiceInterface } from './cats-service-interface';
 import { createLogger } from './create-logger';
-import { and, bodyValidator, isDefined, isNumber, isString, custom } from 'galeh/validators';
+import { and, bodyValidator, isDefined, isNumber, isString, custom } from '@galeh/chuka/validators';
 import { CatModel } from './cat-model';
 
 @injectable()
@@ -26,7 +26,7 @@ export class CatsController extends Controller {
                     }
                 }
             })
-        ).post('/', async (req, res) => {{       
+        ).post('/', async (req, res) => {{
             const allcats = await service.add(req.body.name);
             res.send(allcats);
         }});
