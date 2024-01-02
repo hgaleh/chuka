@@ -4,3 +4,4 @@ samplecpy
 sheep.png
 data.json
 .vscode
+src/**/*.js

@@ -1,31 +1,41 @@
-// webpack.config.js
-const path = require('path');
+const { resolve } = require('path');
 
-module.exports = {
-  // Entry point for the bundle
-  mode: 'production',
-  entry: './src/index.ts',
-  target: 'node',
-  // Output file path and name
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    library: '@galeh/galeh',
-    libraryTarget: 'commonjs'
-  },
-  // Specify the module rules for loaders
-  module: {
-    rules: [
-      // Use ts-loader to transpile TypeScript files
-      {
-        test: /\.ts$/, // Match all files with .ts extension
-        use: 'ts-loader', // Use ts-loader
-        exclude: /node_modules/ // Exclude node_modules folder
-      }
-    ]
-  },
-  // Specify the file extensions to resolve
-  resolve: {
-    extensions: ['.ts', '.js'] // Resolve .ts and .js files
+module.exports = [
+  createConfig(resolve(__dirname, './src/index.ts'), resolve(__dirname, 'dist'), 'index.js', '@galeh/chuka'),
+  createConfig(resolve(__dirname, './src/decorators/index.ts'), resolve(__dirname, 'dist/decorators'), 'index.js', '@galeh/chuka/decorators'),
+  createConfig(resolve(__dirname, './src/middlewares/index.ts'), resolve(__dirname, 'dist/middlewares'), 'index.js', '@galeh/chuka/middlewares'),
+  createConfig(resolve(__dirname, './src/validators/index.ts'), resolve(__dirname, 'dist/validators'), 'index.js', '@galeh/chuka/validators'),
+];
+
+function createConfig(entryFile, outputDir, outputFile, libname) {
+  return {
+    mode: 'production',
+    entry: entryFile,
+    target: 'node',
+    output: {
+      path: resolve(__dirname, outputDir),
+      filename: outputFile,
+      library: libname,
+      libraryTarget: 'commonjs'
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          use: 'ts-loader',
+          exclude: /node_modules/
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['.ts']
+    },
+    externals: {
+      "express": "express",
+      "express-ws": "express-ws",
+      "inversify": "inversify",
+      "reflect-metadata": "reflect-metadata",
+      "tslib": "tslib"
+    }
   }
-};
+}
