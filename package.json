@@ -1,6 +1,6 @@
 {
   "name": "@galeh/chuka",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "simple yet robust wrapper for expressjs",
   "scripts": {
     "build": "./scripts/build.bash"
@@ -23,13 +23,16 @@
     "express-ws": "^5.0.2",
     "inversify": "^6.0.2",
     "reflect-metadata": "^0.2.1",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "@types/express": "^4.17.21",
+    "@types/express-ws": "^3.0.4",
+    "@types/ws": "^8.5.10"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.0",
-    "@types/express": "^4.17.21",
-    "@types/express-ws": "^3.0.4",
-    "@types/ws": "^8.5.10",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",

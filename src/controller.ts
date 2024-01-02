@@ -1,7 +1,6 @@
-import express from 'express';
-import core from 'express-serve-static-core';
+import { Request, Response, NextFunction, Router } from 'express';
 import { injectable } from 'inversify';
-import ws from 'ws';
+import { WebSocket } from 'ws';
 
 export const getRouterSymbol = Symbol();
 export const setControllerSymbol = Symbol();
@@ -11,34 +10,34 @@ export type RequestHandlerParams<T> = Middleware<T> | ErrorHandler<T>;
 
 export interface Middleware<T> {
     (
-        req: MergePartial<express.Request, T>,
-        res: express.Response,
-        next: core.NextFunction
+        req: MergePartial<Request, T>,
+        res: Response,
+        next: NextFunction
     ): void;
 }
 
 export interface ErrorHandler<T> {
     (
         err: any,
-        req: MergePartial<express.Request, T>,
-        res: express.Response,
-        next: express.NextFunction,
+        req: MergePartial<Request, T>,
+        res: Response,
+        next: NextFunction,
     ): void;
 }
 
 @injectable()
 export class Controller {
-    private router: express.Router;
+    private router: Router;
 
     constructor() {
-        this.router = express.Router();
+        this.router = Router();
     }
 
-    private [setControllerSymbol](path: core.PathParams, subrouter: Controller): void {
+    private [setControllerSymbol](path: any, subrouter: Controller): void {
         this.router.use(path, subrouter[getRouterSymbol]());
     }
 
-    private [getRouterSymbol](): express.Router {
+    private [getRouterSymbol](): Router {
         return this.router;
     }
 
@@ -63,8 +62,8 @@ export class Controller {
     }
 }
 
-type WSHandler<T> = (ws: ws.WebSocket, req: Merge<express.Request, T>) => void;
-export type WSMiddleware<T> = (ws: ws.WebSocket, req: MergePartial<express.Request, T>, next: express.NextFunction) => void
+type WSHandler<T> = (ws: WebSocket, req: Merge<Request, T>) => void;
+export type WSMiddleware<T> = (ws: WebSocket, req: MergePartial<Request, T>, next: NextFunction) => void
 
 interface MiniControllerWS<T> {
     (handler: WSHandler<T>): void;
@@ -167,9 +166,9 @@ interface RequestHandler<
     P = ParamsDictionary
 > {
     (
-        req: Merge<express.Request, T & { params: P }>,
-        res: express.Response,
-        next: core.NextFunction
+        req: Merge<Request, T & { params: P }>,
+        res: Response,
+        next: NextFunction
     ): void;
 }
 

@@ -1,13 +1,12 @@
 import 'reflect-metadata';
-import express from 'express';
+import * as express from 'express';
 import { Container, interfaces } from "inversify";
-import inversify from "inversify";
+import * as inversify from "inversify";
 import { Controller, RequestHandlerParams, getRouterSymbol, setControllerSymbol } from './controller';
-import ws from 'express-ws';
-import core from 'express-serve-static-core';
+import * as ws from 'express-ws';
 
 export function createApp(config: ApplicationConfig): express.Application {
-    const app = express();
+    const app = express.default();
 
     if (config.on) {
         setEventCallbacks(app, config.on);
@@ -17,7 +16,7 @@ export function createApp(config: ApplicationConfig): express.Application {
         applySettings(app, config.set);
     }
 
-    ws(app);
+    ws.default(app);
 
     if (config.middlewares) {
         app.use.apply(app, config.middlewares as any);
@@ -124,7 +123,7 @@ interface Dependency {
 }
 
 interface Route {
-    path: core.PathParams;
+    path: PathParams;
     controller: Type<Controller>;
     children?: Array<Route>;
 }
@@ -195,3 +194,4 @@ type SettingsEnumKeys =
     'viewEngine' |
     'xPoweredBy';
 
+export type PathParams = string | RegExp | Array<string | RegExp>;
