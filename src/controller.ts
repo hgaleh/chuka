@@ -70,30 +70,87 @@ interface MiniControllerWS<T> {
     (handler: WSHandler<T>): void;
 }
 
-class MiniController<T> {
+interface MiniControllerInterface<T> {
+    all: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    get: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    post: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    put: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    delete: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    patch: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    options: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    head: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+
+    checkout: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    connect: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    copy: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    lock: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    merge: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    mkactivity: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    mkcol: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    move: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    "m-search": <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    notify: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    propfind: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    proppatch: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    purge: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    report: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    search: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    subscribe: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    trace: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    unlock: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    unsubscribe: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    link: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+    unlink: <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void;
+}
+
+class MiniController<T> implements MiniControllerInterface<T> {
     constructor(
         private router: any,
         private middlewares: any[]
-    ) {}
+    ) { }
+    
+    all = this.methodImplementation('all').bind(this);
+    get = this.methodImplementation('get').bind(this);
+    post = this.methodImplementation('post').bind(this);
+    put = this.methodImplementation('put').bind(this);
+    delete = this.methodImplementation('delete').bind(this);
+    patch = this.methodImplementation('patch').bind(this);
+    options = this.methodImplementation('options').bind(this);
+    head = this.methodImplementation('head').bind(this);
+    
+    checkout = this.methodImplementation('checkout').bind(this);
+    connect = this.methodImplementation('connect').bind(this);
+    copy = this.methodImplementation('copy').bind(this);
+    lock = this.methodImplementation('lock').bind(this);
+    merge = this.methodImplementation('merge').bind(this);
+    mkactivity = this.methodImplementation('mkactivity').bind(this);
+    mkcol = this.methodImplementation('mkcol').bind(this);
+    move = this.methodImplementation('move').bind(this);
+    'm-search' = this.methodImplementation('m-search').bind(this);
+    notify = this.methodImplementation('notify').bind(this);
+    propfind = this.methodImplementation('propfind').bind(this);
+    proppatch = this.methodImplementation('proppatch').bind(this);
+    purge = this.methodImplementation('purge').bind(this);
+    report = this.methodImplementation('report').bind(this);
+    search = this.methodImplementation('search').bind(this);
+    subscribe = this.methodImplementation('subscribe').bind(this);
+    trace = this.methodImplementation('trace').bind(this);
+    unlock = this.methodImplementation('unlock').bind(this);
+    unsubscribe = this.methodImplementation('unsubscribe').bind(this);
+    link = this.methodImplementation('link').bind(this);
+    unlink = this.methodImplementation('unlink').bind(this);
 
-    get<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>): void {
-        this.router.get.apply(this.router, [
-            path,
-            ...this.middlewares,
-            (req: any, res: any, next: any) => {
-                handler(req, res, next);
-            }
-        ]);
-    }
 
-    post<Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>): void {
-        this.router.post.apply(this.router, [
-            path,
-            ...this.middlewares,
-            (req: any, res: any, next: any) => {
-                handler(req, res, next);
-            }
-        ]);
+    private methodImplementation(methodName: PropertyKey): <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>)=> void {
+        return <Path extends string>(path: Path, handler: RequestHandler<T, RouteParameters<Path>>): void => {
+            this.router[methodName].apply(this.router, [
+                path,
+                ...this.middlewares,
+                (req: any, res: any, next: any) => {
+                    handler(req, res, next);
+                }
+            ]);
+        }
     }
 
     middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<Merge<T, M0>>;
