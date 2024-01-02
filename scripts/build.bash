@@ -13,4 +13,3 @@ rm -rf temp
 rm -rf dist-ts
 
 node ./scripts/create-package-json.js
-cp package-lock.json dist/package-lock.json
