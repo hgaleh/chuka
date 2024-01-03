@@ -1,6 +1,6 @@
 {
   "name": "@galeh/chuka",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "simple yet robust wrapper for expressjs",
   "scripts": {
     "build": "./scripts/build.bash"
