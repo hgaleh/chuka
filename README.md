@@ -1,5 +1,5 @@
 # Purpose
-This package aims at making the API programming much easier, using the expressjs as underlying library, it creates fast API's. It adds leverages expressjs by adding strong types, dependency injection and profound validation.
+This package fortifies Express.js, empowering it with strong types, dependency injection, profound validation, and a streamlined approach to simplify API programming.
 
 # Example
 
