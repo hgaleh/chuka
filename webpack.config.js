@@ -34,10 +34,7 @@ function createConfig(entryFile, outputFile, libname) {
       "express-ws": "express-ws",
       "inversify": "inversify",
       "reflect-metadata": "reflect-metadata",
-      "tslib": "tslib",
-      "@types/express": "@types/express",
-      "@types/express-ws": "@types/express-ws",
-      "@types/ws": "@types/ws"
+      "tslib": "tslib"
     },
     experiments: {
       outputModule: true
