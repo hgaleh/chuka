@@ -7,46 +7,48 @@ import { AuthServiceInterface } from '../services/interfaces/auth-service-interf
 import { UserServiceInterface } from '../services/interfaces/user-service-interface';
 
 export class AuthController extends Controller {
-    constructor(
-      @inject(injectionTokens.UserService) userService: UserServiceInterface,
-      @inject(injectionTokens.AuthService) authService: AuthServiceInterface
-    ) {
-        super();
-        const middleware = this.middleware();
-        const authorised = middleware.middleware(authHandler);
 
-        authorised.get('/check-token', (req, res) => {
-          res.setHeader('User-Id', req.user.id);
-          res.sendStatus(200);
-        });
+  intercepted = this.middleware();
+  authorised = this.intercepted.middleware(authHandler);
 
-        authorised.get('/me', async (req, res) => {
-          const user = await userService.getUserById(req.user.id);
-          res.json({ result: resultCodes.SUCCESS, user });
-        });
+  checkToken = this.authorised.get('/check-token', (req, res) => {
+    res.setHeader('User-Id', req.user.id);
+    res.sendStatus(200);
+  });
 
-        middleware.post('/register', async (req, res, next) => {
-          const { name, email, password } = req.body;
+  me = this.authorised.get('/me', async (req, res) => {
+    const user = await this.userService.getUserById(req.user.id);
+    res.json({ result: resultCodes.SUCCESS, user });
+  });
 
-          try {
-            await authService.registerUser(name, email, password);
-            res.status(201).json({ result: resultCodes.SUCCESS });
-          } catch (x) {
-            next(x);
-          }
+  register = this.intercepted.post('/register', async (req, res, next) => {
+    const { name, email, password } = req.body;
 
-        });
-
-        middleware.post('/login', async (req, res, next) => {
-          const { email, password } = req.body;
-
-          try {
-            const data = await authService.getTokenFromEmailAndPassword(email, password);
-            res.json({ result: resultCodes.SUCCESS, data });
-          } catch (x) {
-            next(x);
-          }
-
-        });
+    try {
+      await this.authService.registerUser(name, email, password);
+      res.status(201).json({ result: resultCodes.SUCCESS });
+    } catch (x) {
+      next(x);
     }
+
+  });
+
+  login = this.intercepted.post('/login', async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+      const data = await this.authService.getTokenFromEmailAndPassword(email, password);
+      res.json({ result: resultCodes.SUCCESS, data });
+    } catch (x) {
+      next(x);
+    }
+
+  });
+
+  constructor(
+    @inject(injectionTokens.UserService) private userService: UserServiceInterface,
+    @inject(injectionTokens.AuthService) private authService: AuthServiceInterface
+  ) {
+    super();
+  }
 }

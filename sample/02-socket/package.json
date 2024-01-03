@@ -12,7 +12,7 @@
   "dependencies": {
     "@types/express-session": "^1.17.10",
     "express-session": "^1.17.3",
-    "@galeh/chuka": "../../dist"
+    "@galeh/chuka": "../../dist/chuka"
   },
   "devDependencies": {
     "ts-node": "^10.9.2"
