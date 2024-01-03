@@ -5,3 +5,5 @@ sheep.png
 data.json
 .vscode
 src/**/*.js
+dist-ts/
+temp/

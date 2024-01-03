@@ -1,21 +1,20 @@
 const { resolve } = require('path');
 
 module.exports = [
-  createConfig(resolve(__dirname, './src/index.ts'), resolve(__dirname, 'dist'), 'index.js', '@galeh/chuka'),
-  createConfig(resolve(__dirname, './src/decorators/index.ts'), resolve(__dirname, 'dist/decorators'), 'index.js', '@galeh/chuka/decorators'),
-  createConfig(resolve(__dirname, './src/middlewares/index.ts'), resolve(__dirname, 'dist/middlewares'), 'index.js', '@galeh/chuka/middlewares'),
-  createConfig(resolve(__dirname, './src/validators/index.ts'), resolve(__dirname, 'dist/validators'), 'index.js', '@galeh/chuka/validators'),
+  createConfig(resolve(__dirname, './src/index.ts'), 'index.js', '@galeh/chuka'),
+  createConfig(resolve(__dirname, './src/decorators/index.ts'), 'decorators.js', '@galeh/chuka/decorators'),
+  createConfig(resolve(__dirname, './src/middlewares/index.ts'), 'middlewares.js', '@galeh/chuka/middlewares'),
+  createConfig(resolve(__dirname, './src/validators/index.ts'), 'validators.js', '@galeh/chuka/validators'),
 ];
 
-function createConfig(entryFile, outputDir, outputFile, libname) {
+function createConfig(entryFile, outputFile, libname) {
   return {
-    mode: 'production',
+    mode: 'development',
     entry: entryFile,
-    target: 'node',
+    target: 'node12.7',
     output: {
-      path: resolve(__dirname, outputDir),
+      path: resolve(__dirname, 'dist/chuka'),
       filename: outputFile,
-      library: libname,
       libraryTarget: 'commonjs'
     },
     module: {
@@ -39,6 +38,9 @@ function createConfig(entryFile, outputDir, outputFile, libname) {
       "@types/express": "@types/express",
       "@types/express-ws": "@types/express-ws",
       "@types/ws": "@types/ws"
+    },
+    experiments: {
+      outputModule: true
     }
   }
 }

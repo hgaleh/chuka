@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -rf dist
-mkdir dist
+
 webpack-cli
 
 api-extractor run --local --verbose --config ./config/api-extractor.index.json

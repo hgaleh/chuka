@@ -8,6 +8,8 @@ const { resolve } = require('path');
 
     delete objectPackage.scripts;
     delete objectPackage.devDependencies;
+    objectPackage.type = 'commonjs';
+    objectPackage.main = 'index.js';
 
-    await writeFile(resolve(__dirname, '../dist/package.json'), JSON.stringify(objectPackage, null, 4));
+    await writeFile(resolve(__dirname, '../dist/chuka/package.json'), JSON.stringify(objectPackage, null, 4));
 })()
