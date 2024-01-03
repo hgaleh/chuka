@@ -9,6 +9,8 @@ api-extractor run --local --verbose --config ./config/api-extractor.decorators.j
 api-extractor run --local --verbose --config ./config/api-extractor.middlewares.json
 api-extractor run --local --verbose --config ./config/api-extractor.validators.json
 
+cp README.md ./dist/chuka/README.md
+
 rm -rf temp
 rm -rf dist-ts
 
