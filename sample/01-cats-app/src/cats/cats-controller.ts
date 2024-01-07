@@ -7,11 +7,11 @@ import { CatModel } from './cat-model';
 
 @injectable()
 export class CatsController extends Controller {
-    intercepted = this.middleware(
+    intercepted = this.use(
         createLogger()
     );
 
-    postCat = this.intercepted.middleware(
+    postCat = this.intercepted.use(
         bodyValidator<CatModel>({
             name: and(isDefined(), isString()),
             country: isNumber(),

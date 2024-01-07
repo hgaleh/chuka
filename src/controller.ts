@@ -41,23 +41,23 @@ export class Controller {
         return this.router;
     }
 
-    protected middlewareWS<M0>(): MiniControllerWS<M0>;
-    protected middlewareWS<M0>(middleware0: WSMiddleware<M0>): MiniControllerWS<M0>;
-    protected middlewareWS<M0, M1>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>): MiniControllerWS<M0 & M1>;
-    protected middlewareWS<M0, M1, M2>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>, middleware2: WSMiddleware<M2>): MiniControllerWS<M0 & M1 & M2>;
-    protected middlewareWS<M0, M1, M2, M3>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>, middleware2: WSMiddleware<M2>, middleware3: WSMiddleware<M3>): MiniControllerWS<M0 & M1 & M2 & M3>;
-    protected middlewareWS(...middlewares: Array<unknown>): MiniControllerWS<unknown> {
+    protected useWS<M0>(): MiniControllerWS<M0>;
+    protected useWS<M0>(middleware0: WSMiddleware<M0>): MiniControllerWS<M0>;
+    protected useWS<M0, M1>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>): MiniControllerWS<M0 & M1>;
+    protected useWS<M0, M1, M2>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>, middleware2: WSMiddleware<M2>): MiniControllerWS<M0 & M1 & M2>;
+    protected useWS<M0, M1, M2, M3>(middleware0: WSMiddleware<M0>, middleware1: WSMiddleware<M1>, middleware2: WSMiddleware<M2>, middleware3: WSMiddleware<M3>): MiniControllerWS<M0 & M1 & M2 & M3>;
+    protected useWS(...middlewares: Array<unknown>): MiniControllerWS<unknown> {
         return (handler) => {
             (this.router as any).ws.apply(this.router, ['/', ...middlewares, handler]);
         }
     }
 
-    protected middleware<M0>(): MiniController<M0>;
-    protected middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<M0>;
-    protected middleware<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<M0 & M1>;
-    protected middleware<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<M0 & M1 & M2>;
-    protected middleware<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<M0 & M1 & M2 & M3>;
-    protected middleware(...middlewares: Array<unknown>): MiniController<unknown> {    
+    protected use<M0>(): MiniController<M0>;
+    protected use<M0>(middleware0: RequestHandlerParams<M0>): MiniController<M0>;
+    protected use<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<M0 & M1>;
+    protected use<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<M0 & M1 & M2>;
+    protected use<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<M0 & M1 & M2 & M3>;
+    protected use(...middlewares: Array<unknown>): MiniController<unknown> {    
         return new MiniController(this.router, middlewares);
     }
 }
@@ -152,11 +152,11 @@ class MiniController<T> implements MiniControllerInterface<T> {
         }
     }
 
-    middleware<M0>(middleware0: RequestHandlerParams<M0>): MiniController<Merge<T, M0>>;
-    middleware<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<Merge<T, M0 & M1>>;
-    middleware<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<Merge<T, M0 & M1 & M2>>;
-    middleware<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
-    middleware<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
+    use<M0>(middleware0: RequestHandlerParams<M0>): MiniController<Merge<T, M0>>;
+    use<M0, M1>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>): MiniController<Merge<T, M0 & M1>>;
+    use<M0, M1, M2>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>): MiniController<Merge<T, M0 & M1 & M2>>;
+    use<M0, M1, M2, M3>(middleware0: RequestHandlerParams<M0>, middleware1: RequestHandlerParams<M1>, middleware2: RequestHandlerParams<M2>, middleware3: RequestHandlerParams<M3>): MiniController<Merge<T, M0 & M1 & M2 & M3>>;
+    use<S>(...middlewares: Array<Middleware<S>>): MiniController<S> {    
         return new MiniController(this.router, this.middlewares.concat(middlewares));
     }
 }

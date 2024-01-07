@@ -1,7 +1,7 @@
 import { Controller } from '@galeh/chuka';
 
 export class SocketController extends Controller {
-    wsHandler = this.middlewareWS(
+    wsHandler = this.useWS(
         (ws, req, next) => {
             console.log({middlewareSessionId: req.session.id});
             console.log({count: req.session.count});

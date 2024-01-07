@@ -1,7 +1,7 @@
 import { Controller } from '@galeh/chuka';
 
 export class HttpController extends Controller {
-    intercepted = this.middleware();
+    intercepted = this.use();
 
     getRefreshCount = this.intercepted.get('/', (req, res) => {
         if (!req.session?.count) {

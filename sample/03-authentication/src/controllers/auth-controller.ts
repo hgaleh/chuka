@@ -8,8 +8,8 @@ import { UserServiceInterface } from '../services/interfaces/user-service-interf
 
 export class AuthController extends Controller {
 
-  intercepted = this.middleware();
-  authorised = this.intercepted.middleware(authHandler);
+  intercepted = this.use();
+  authorised = this.intercepted.use(authHandler);
 
   checkToken = this.authorised.get('/check-token', (req, res) => {
     res.setHeader('User-Id', req.user.id);
