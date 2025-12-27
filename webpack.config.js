@@ -1,10 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = [
-  createConfig(resolve(__dirname, './src/index.ts'), 'index.js', '@galeh/chuka'),
-  createConfig(resolve(__dirname, './src/decorators/index.ts'), 'decorators.js', '@galeh/chuka/decorators'),
-  createConfig(resolve(__dirname, './src/middlewares/index.ts'), 'middlewares.js', '@galeh/chuka/middlewares'),
-  createConfig(resolve(__dirname, './src/validators/index.ts'), 'validators.js', '@galeh/chuka/validators'),
+  createConfig(resolve(__dirname, './src/index.ts'), 'index.js', '@galeh/chuka')
 ];
 
 function createConfig(entryFile, outputFile, libname) {
