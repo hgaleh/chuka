@@ -1,9 +1,6 @@
 export interface CatModel {
     name: string;
-    country?: {
-        name: string;
-        numberOfCatSpecies: number;
-    }
+    country?: string;
     age?: number;
     parents?: Array<CatModel>;
 }

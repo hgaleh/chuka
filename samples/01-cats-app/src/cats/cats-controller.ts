@@ -14,17 +14,14 @@ export class CatsController extends Controller {
     postCat = this.intercepted.use(
         bodyValidator<CatModel>({
             name: and(isDefined(), isString()),
-            country: isNumber(),
-            age: custom(model => Promise.resolve(!!(model.age && model.age > 2))),
+            country: isString(),
+            age: custom(model => Promise.resolve(!!(model.age && model.age > 0))),
             parents: {
-                name: isString(),
-                parents: {
-                    country: isString(),
-                }
+            	name: and(isDefined(), isString())
             }
         })
     ).post('/', async (req, res) => {{
-        const allcats = await this.service.add(req.body.name);
+        const allcats = await this.service.add(req.body);
         res.send(allcats);
     }});
 

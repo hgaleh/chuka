@@ -19,9 +19,7 @@ export class CatsService implements CatsServiceInterface {
     return Promise.resolve(this.cats);
   }
 
-  async add(name: string): Promise<void> {
-    this.cats.push({
-      name
-    });
+  async add(cat: CatModel): Promise<void> {
+    this.cats.push(cat);
   }
 }
