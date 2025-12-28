@@ -10,6 +10,7 @@ const { resolve } = require('path');
     delete objectPackage.devDependencies;
     objectPackage.type = 'commonjs';
     objectPackage.main = 'index.js';
+	objectPackage.types = 'index.d.ts'
 
     await writeFile(resolve(__dirname, '../dist/chuka/package.json'), JSON.stringify(objectPackage, null, 4));
 })()

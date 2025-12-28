@@ -16,71 +16,116 @@
 npm install @galeh/chuka
 ```
 ```typescript
-// main.ts
-import { createApp, json } from '@galeh/chuka';
-import { CatsController, CatsService } from './your-modules'; // Customize based on your project structure
+import { createApp, Controller, injectable, json, bodyValidator, and, isDefined, isString, isNumber, custom, inject } from '@galeh/chuka';
+
+@injectable()
+class CatsService implements CatsServiceInterface {
+	private cats: CatsModel[] = [
+		{
+			age: 1,
+			country: 'USA',
+			name: 'Tom',
+			parents: [
+				{
+					age: 2,
+					country: 'Cuba',
+					name: 'Daddy',
+					parents: []
+				},
+				{
+					age: 2,
+					country: 'China',
+					name: 'Mommy',
+					parents: []
+				}
+			]
+		}
+	]
+
+	findAll(): Promise<CatsModel[]> {
+		return Promise.resolve(this.cats);
+	}
+
+	findOne(name: string): Promise<CatsModel | null> {
+		return Promise.resolve(this.cats.filter(cat => cat.name === name)[0] || null);
+	}
+
+	add(cat: CatsModel): Promise<void> {
+		this.cats.push(cat);
+		return Promise.resolve();
+	}
+}
+
+@injectable()
+class CatsController extends Controller {
+	private intercepted = this.use(
+	);
+
+	postCat = this.intercepted.use(
+		bodyValidator<CatsModel>({
+			name: and(isDefined(), isString()),
+			country: isNumber(),
+			age: custom(model => Promise.resolve(!!(model.age && model.age > 2))),
+			parents: custom(model => Array.isArray(model.parents))
+		})
+	).post('/', async (req, res) => {
+		{
+			const allcats = await this.service.add(req.body);
+			res.send(allcats);
+		}
+	});
+
+	getAllCats = this.intercepted.get('/', async (req, res) => {
+		{
+			const allcats = await this.service.findAll();
+			res.send(allcats);
+		}
+	});
+
+	getCatByName = this.intercepted.get('/:name', async (req, res) => {
+		const onecat = await this.service.findOne(req.params.name);
+		res.send(onecat);
+	});
+
+	constructor(@inject('catservice') private service: CatsServiceInterface) {
+		super();
+	}
+}
 
 const app = createApp({
-    dependencies: [
-        { provide: 'catservice', useClass: CatsService },
-        // Add more dependencies as needed
-    ],
-    routes: [{ path: '/cats', controller: CatsController }],
-    middlewares: [json()],
+	dependencies: [
+		{ provide: 'catservice', useClass: CatsService },
+		// Add more dependencies as needed
+	],
+	routes: [{ path: '/cats', controller: CatsController }],
+	middlewares: [json()],
 });
 
 app.use((error: any, req: any, res: any, next: any) => {
-    res.status(400).json(error);
+	res.status(400).json(error);
 });
 
 app.listen(8080, () => {
-    console.log('🚀 Running @galeh/chuka application on port 8080!');
+	console.log('🚀 Running @galeh/chuka application on port 8080!');
 });
 
-```
 
-```typescript
-// a typical controller
+interface CatsServiceInterface {
+	add(cat: CatsModel): Promise<void>;
+	findAll(): Promise<CatsModel[]>;
+	findOne(name: string): Promise<CatsModel | null>;
+}
 
-@injectable()
-export class CatsController extends Controller {
-    intercepted = this.use(
-        createLogger()
-    );
-
-    postCat = this.intercepted.use(
-        bodyValidator<CatModel>({
-            name: and(isDefined(), isString()),
-            country: isNumber(),
-            age: custom(model => Promise.resolve(!!(model.age && model.age > 2))),
-            parents: {
-                name: isString(),
-                parents: {
-                    country: isString(),
-                }
-            }
-        })
-    ).post('/', async (req, res) => {{
-        const allcats = await this.service.add(req.body.name);
-        res.send(allcats);
-    }});
-
-    getAllCats = this.intercepted.get('/', async (req, res) => {{
-        const allcats = await this.service.findAll();
-        res.send(allcats);
-    }});
-
-    getCatById = this.intercepted.get('/:id', async (req, res) => {
-        const onecat = await this.service.findOne(+req.params.id);
-        res.send(onecat);
-    });
-
-    constructor(@inject('catservice') private service: CatsServiceInterface) {
-        super();
-    }
+interface CatsModel {
+	name: string;
+	country: string;
+	age: number;
+	parents: CatsModel[];
 }
 
 ```
+
+
 Explore the possibilities and experience a new level of Express.js development with [@galeh/chuka](https://www.npmjs.com/package/@galeh/chuka). 🌟
 
 
