@@ -31,8 +31,7 @@ jobs:
       - name: Build
         run: |
           npm ci
-          echo $PWD
-          ls
+          ls packages/chuka
       - name: Publish
         working-directory: packages/chuka/dist/chuka
         run: |
