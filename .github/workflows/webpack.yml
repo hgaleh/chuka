@@ -6,8 +6,12 @@ name: Node.js Package
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - packages/chuka/package.json
   pull_request:
     branches: [ "master" ]
+    paths:
+      - packages/chuka/package.json
 
 jobs:
   build:
