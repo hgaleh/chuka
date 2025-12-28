@@ -21,6 +21,7 @@ const app = createApp({
 });
 
 app.use((error: any, req: any, res: any, next: any) => {
+	console.error('there is an error:', JSON.stringify(error));
     res.status(400).json(error);
 })
 

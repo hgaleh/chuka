@@ -2,7 +2,7 @@ import { Controller } from '@galeh/chuka';
 import { inject, injectable } from '@galeh/chuka';
 import { CatsServiceInterface } from './cats-service-interface';
 import { createLogger } from './create-logger';
-import { and, bodyValidator, isDefined, isNumber, isString, custom } from '@galeh/chuka';
+import { and, bodyValidator, isDefined, isString, custom } from '@galeh/chuka';
 import { CatModel } from './cat-model';
 
 @injectable()
