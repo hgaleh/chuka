@@ -2,7 +2,7 @@
 
 rm -rf dist
 
-webpack-cli
+webpack-cli --mode $1
 
 api-extractor run --local --verbose --config ./config/api-extractor.index.json
 
