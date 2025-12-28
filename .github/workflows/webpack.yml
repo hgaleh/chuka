@@ -28,9 +28,10 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-	  - name: Publish Packages
-			- working-directory: packages/chuka/dist/chuka
-      		- run: npm publish
-			env:
-				NODE_AUTH_TOKEN: ${{secrets.NPMTOKEN}}
+      - name: Build
+        run: npm ci
+      - name: Publish
+        working-directory: packages/chuka/dist/chuka
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPMTOKEN}}
