@@ -1,4 +1,4 @@
-import { injectable } from '@galeh/chuka/decorators';
+import { injectable } from '@galeh/chuka';
 import { CatsServiceInterface } from './cats-service-interface';
 import { CatModel } from './cat-model';
 
@@ -11,7 +11,7 @@ export class CatsService implements CatsServiceInterface {
   ];
 
   async findOne(id: number): Promise<CatModel> {
-    const res = this.cats.at(id) as CatModel;
+    const res = this.cats[id] as CatModel;
     return Promise.resolve(res);
   }
 

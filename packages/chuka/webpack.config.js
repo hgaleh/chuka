@@ -8,7 +8,7 @@ function createConfig(entryFile, outputFile, libname) {
   return {
     mode: 'development',
     entry: entryFile,
-    target: 'node12.7',
+    target: 'node12',
     output: {
       path: resolve(__dirname, 'dist/chuka'),
       filename: outputFile,
@@ -35,9 +35,6 @@ function createConfig(entryFile, outputFile, libname) {
       "@types/express": "@types/express",
       "@types/express-ws": "@types/express-ws",
       "@types/ws": "@types/ws"
-    },
-    experiments: {
-      outputModule: true
     }
   }
 }

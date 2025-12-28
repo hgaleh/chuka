@@ -1,5 +1,4 @@
-import { createApp } from '@galeh/chuka';
-import { json } from '@galeh/chuka/middlewares';
+import { createApp, json } from '@galeh/chuka';
 import { CatsController } from './cats/cats-controller';
 import { CatsService } from './cats/cats-service';
 

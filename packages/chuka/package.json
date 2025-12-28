@@ -1,10 +1,10 @@
 {
   "name": "@galeh/chuka",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "simple yet robust wrapper for expressjs",
   "scripts": {
     "build": "./scripts/build.bash",
-    "prepublish": "npm run build"
+	"publish": "npm publish dist/chuka"
   },
   "keywords": [
     "chuka",
@@ -45,6 +45,13 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/hgaleh/chuka.git"
-  }
+    "url": "git+https://github.com/hgaleh/chuka.git"
+  },
+  "main": "dist/chuka/index.js",
+  "types": "dist/chuka/index.d.ts",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hgaleh/chuka/issues"
+  },
+  "homepage": "https://github.com/hgaleh/chuka#readme"
 }

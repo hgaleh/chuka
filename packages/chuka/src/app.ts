@@ -137,7 +137,7 @@ interface ApplicationConfig {
 }
 
 type EventCallback = {
-    event: 'connect' | 'connection' | 'close' | 'error' | 'listening' | 'lookup' | 'ready' | 'timeout' | 'mount';
+    event: 'mount';
     callback: (parent: express.Application) => void
 };
 

@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@galeh/chuka": "../../dist/chuka",
+    "@galeh/chuka": "*",
     "status-code-enum": "^1.0.0"
   },
   "devDependencies": {

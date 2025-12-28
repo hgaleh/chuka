@@ -1,4 +1,4 @@
-import { inject, injectable } from '@galeh/chuka/decorators';
+import { inject, injectable } from '@galeh/chuka';
 import { UserNotFound } from '../exceptions/user-not-found';
 import { UserServiceInterface } from './interfaces/user-service-interface';
 import { UserModel } from '../models/user-model';
